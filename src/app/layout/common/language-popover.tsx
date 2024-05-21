@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Popover from "@mui/material/Popover";
 import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
+import Image from "next/image";
 
 // ----------------------------------------------------------------------
 
@@ -48,7 +49,7 @@ export default function LanguagePopover() {
           bgcolor: open ? "action.selected" : "",
         }}
       >
-        <img src={LANGS[0].icon} alt={LANGS[0].label} />
+        <Image src={LANGS[0].icon} alt={LANGS[0].label} width={70} height={70} />
       </IconButton>
 
       <Popover

@@ -7,7 +7,15 @@ import Box from "@mui/material/Box";
 // ----------------------------------------------------------------------
 
 const Iconify = forwardRef(({ icon, width = 20, sx, color, ...other }: { icon: any; width: any; sx: any; color: string }, ref) => (
-  <Box ref={ref} component={Icon} className="component-iconify" icon={icon} sx={{ width, height: width, ...sx }} style={{ color: color }} {...other} />
+  <Box
+    ref={ref}
+    component={Icon}
+    className="component-iconify"
+    icon={icon}
+    sx={{ width, height: width, ...sx }}
+    style={{ color: color }}
+    {...other}
+  />
 ));
 
 Iconify.propTypes = {
@@ -15,5 +23,7 @@ Iconify.propTypes = {
   sx: PropTypes.object,
   width: PropTypes.number,
 };
+
+Iconify.displayName = "Iconify";
 
 export default Iconify;
