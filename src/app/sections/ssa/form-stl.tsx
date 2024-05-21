@@ -4,19 +4,7 @@
  * Copyright (c) 2024 CC
  * Author:  Cristian R. Paz  */
 
-import {
-  FirstPage,
-  LastPage,
-  Checklist,
-  Article,
-  PostAdd,
-  List,
-  FileCopy,
-  FormatListNumbered,
-  Check,
-  DoneAll,
-  CheckCircleOutline,
-} from "@mui/icons-material";
+import { FirstPage, LastPage, Checklist, PostAdd, FileCopy, FormatListNumbered, Check, CheckCircleOutline } from "@mui/icons-material";
 import {
   Container,
   Stack,
@@ -43,7 +31,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import PageContainer from "../../components/container/PageContainer";
 import { InputRadiotCC, InputTextAreaCC, InputTextCC } from "../../components/input";
-import { DateCC, TimeCC } from "../../components/date-hour";
+import { DateCC } from "../../components/date-hour";
 import { SelectCC } from "../../components/select-option";
 import { GetProgramas, GetTurnos, GetLugarObs, GetProyectos, GetAreas, GetPreguntas } from "@/app/api/dataApiComponents";
 import { useResponsive } from "@/hooks/use-responsive";
@@ -706,9 +694,9 @@ export default function FormSTL() {
                                           </TableRow>
                                         );
                                       })}
-                                      {datospreview2.map((val) => {
+                                      {datospreview2.map((val, index) => {
                                         return (
-                                          <TableRow>
+                                          <TableRow key={index}>
                                             <TableCell component="th" scope="row">
                                               {val.key}:
                                             </TableCell>
