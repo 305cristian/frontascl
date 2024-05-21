@@ -1,0 +1,22 @@
+          import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(datRows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const fileData = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    saveAs(fileData, "data.xlsx");
+  };
+
+  /*   const exportToCSV = () => {
+    const csv = XLSX.utils.json_to_csv(datRows);
+    const csvData = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    saveAs(csvData, "data.csv");
+  }; */
+
+
+          <Button onClick={exportToExcel} variant="contained" color="success">
+            Exportar a Excel
+          </Button>

@@ -1,0 +1,21 @@
+import React from "react";
+import GetMenuitems from "./MenuItems";
+import { usePathname } from "next/navigation";
+import { Box, List } from "@mui/material";
+import NavItem from "./NavItem";
+
+const SidebarItems = ({ toggleMobileSidebar }: any) => {
+  const pathname = usePathname();
+  const pathDirect = pathname;
+  const Menuitems = GetMenuitems();
+  return (
+    <Box sx={{ px: 1 }}>
+      <List sx={{ pt: 0 }} className="sidebarNav" component="div">
+        {Menuitems.map((item) => {
+          return <NavItem item={item} key={item.id} pathDirect={pathDirect} onClick={toggleMobileSidebar} />;
+        })}
+      </List>
+    </Box>
+  );
+};
+export default SidebarItems;
