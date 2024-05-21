@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
 import { Cancel, PhotoCamera } from "@mui/icons-material";
-import { Controller } from "react-hook-form";
 import Image from "next/image";
 
 interface UploadFileProps {
@@ -20,7 +19,9 @@ export const ImageUploader: React.FC<UploadFileProps> = ({ register, _setValue, 
   const handleImageUpload = (event: any) => {
     const files = event.target.files;
     if (files) {
-      const validImages = Array.from(files).filter((file: any) => file.type.includes("image/jpg") || file.type.includes("image/png") || file.type.includes("image/jpeg"));
+      const validImages = Array.from(files).filter(
+        (file: any) => file.type.includes("image/jpg") || file.type.includes("image/png") || file.type.includes("image/jpeg")
+      );
       const uploadedImages = validImages.map((file: any) => URL.createObjectURL(file));
       setImages((prevImages) => prevImages.concat(uploadedImages as string[]));
       console.log("antes", name);

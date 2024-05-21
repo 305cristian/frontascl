@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 
-import NotFoundView from "@/app/(DashboardLayout)/sections/error/not-found-view";
+import NotFoundView from "@/app/sections/error/not-found-view";
 
 // ----------------------------------------------------------------------
 
