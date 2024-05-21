@@ -50,4 +50,6 @@ Scrollbar.propTypes = {
   sx: PropTypes.object,
 };
 
+Scrollbar.displayName = "Scrollbar";
+
 export default memo(Scrollbar);
