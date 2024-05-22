@@ -9,7 +9,7 @@ export function pxToRem(value) {
 }
 
 export function responsiveFontSizes({ sm, md, lg }) {
-  return {
+  const datos = {
     "@media (min-width:600px)": {
       fontSize: pxToRem(sm),
     },
@@ -20,6 +20,7 @@ export function responsiveFontSizes({ sm, md, lg }) {
       fontSize: pxToRem(lg),
     },
   };
+  return datos;
 }
 
 export const primaryFont = "Public Sans, sans-serif";
@@ -91,17 +92,5 @@ export const typography = {
   caption: {
     lineHeight: 1.5,
     fontSize: pxToRem(12),
-  },
-  overline: {
-    fontWeight: 700,
-    lineHeight: 1.5,
-    fontSize: pxToRem(12),
-    textTransform: "uppercase",
-  },
-  button: {
-    fontWeight: 700,
-    lineHeight: 24 / 14,
-    fontSize: pxToRem(14),
-    textTransform: "unset",
   },
 };

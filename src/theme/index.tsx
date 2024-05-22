@@ -28,7 +28,6 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
   );
 
   const theme = createTheme(memoizedValue);
-
   theme.components = overrides(theme);
 
   return (

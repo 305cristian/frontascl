@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material/styles";
 import { DM_Sans } from "next/font/google";
-import theme from "../theme";
+import { palette } from "@/theme/palette";
 
 export const dm = DM_Sans({
   weight: ["400", "500", "700"],
@@ -213,36 +213,36 @@ const baselightTheme = createTheme({
           color: "white",
         },
         standardSuccess: {
-          backgroundColor: theme.palette.success.light,
-          color: theme.palette.success.main,
+          backgroundColor: palette().success.light,
+          color: palette().success.main,
         },
         standardError: {
-          backgroundColor: theme.palette.error.light,
-          color: theme.palette.error.main,
+          backgroundColor: palette().error.light,
+          color: palette().error.main,
         },
         standardWarning: {
-          backgroundColor: theme.palette.warning.light,
-          color: theme.palette.warning.main,
+          backgroundColor: palette().warning.light,
+          color: palette().warning.main,
         },
         standardInfo: {
-          backgroundColor: theme.palette.info.light,
-          color: theme.palette.info.main,
+          backgroundColor: palette().info.light,
+          color: palette().info.main,
         },
         outlinedSuccess: {
-          borderColor: theme.palette.success.main,
-          color: theme.palette.success.main,
+          borderColor: palette().success.main,
+          color: palette().success.main,
         },
         outlinedWarning: {
-          borderColor: theme.palette.warning.main,
-          color: theme.palette.warning.main,
+          borderColor: palette().warning.main,
+          color: palette().warning.main,
         },
         outlinedError: {
-          borderColor: theme.palette.error.main,
-          color: theme.palette.error.main,
+          borderColor: palette().error.main,
+          color: palette().error.main,
         },
         outlinedInfo: {
-          borderColor: theme.palette.info.main,
-          color: theme.palette.info.main,
+          borderColor: palette().info.main,
+          color: palette().info.main,
         },
       },
     },
