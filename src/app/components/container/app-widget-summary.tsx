@@ -5,13 +5,23 @@ import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { ReactNode } from "react";
-import theme from "@/utils/theme";
-import styled from "@emotion/styled";
-import { ListItem, alpha } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
-export default function AppWidgetSummary({ title, legend, icon, color = "primary", sx, ...other }: { title: string; legend: string; icon: ReactNode; color: string; sx: any }) {
+export default function AppWidgetSummary({
+  title,
+  legend,
+  icon,
+  color = "primary",
+  sx,
+  ...other
+}: {
+  title: string;
+  legend: string;
+  icon: ReactNode;
+  color: string;
+  sx: any;
+}) {
   return (
     <Card
       border={1}

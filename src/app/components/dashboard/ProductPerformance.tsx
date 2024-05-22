@@ -1,15 +1,5 @@
 import React from "react";
-import {
-  Typography,
-  Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Chip,
-  TableContainer,
-} from "@mui/material";
+import { Typography, Box, Table, TableBody, TableCell, TableHead, TableRow, Chip, TableContainer } from "@mui/material";
 import BaseCard from "../shared/DashboardCard";
 
 const products = [

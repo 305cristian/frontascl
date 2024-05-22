@@ -14,12 +14,13 @@ import Image from "next/image";
 import AppWebsiteVisits from "@/app/components/dashboard/app-website-visits";
 import AppCurrentVisits from "@/app/components/dashboard/app-current-visits";
 import { useSession } from "next-auth/react";
+import SalesOverview from "@/app/components/dashboard/SalesOverview";
 
 //---------------------------------------------------------------------
 
 const Dashboard = () => {
   const { data: session, status } = useSession();
-  console.log({ session, status });
+  // console.log({ session, status });
   return (
     <>
       <h3>Hi, Welcome Modules ZAMI 👋</h3>
@@ -90,6 +91,7 @@ const Dashboard = () => {
           </Grid>
 
           <Grid item xs={12} md={6} lg={4}>
+            {/*   <SalesOverview /> */}
             <AppCurrentVisits
               title="Current Visits"
               chart={{

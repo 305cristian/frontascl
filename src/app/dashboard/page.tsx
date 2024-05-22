@@ -9,13 +9,12 @@ import { Suspense } from "react";
 const Dashboard = () => {
   return (
     <PageContainer title="Dashboard" description="this is Dashboard">
-       <Suspense>
+      <Suspense>
         <ThemeProvider>
-        <DashboardMian />
+          <DashboardMian />
         </ThemeProvider>
-        </Suspense>
+      </Suspense>
     </PageContainer>
-   
   );
 };
 

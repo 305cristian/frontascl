@@ -56,20 +56,7 @@ const SalesOverview = () => {
     },
     xaxis: {
       type: "category",
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "July",
-        "Aug",
-        "Sept",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sept", "Oct", "Nov", "Dec"],
       labels: {
         style: {
           cssClass: "grey--text lighten-2--text fill-color",
@@ -109,12 +96,7 @@ const SalesOverview = () => {
   ];
   return (
     <BaseCard title="Sales Overview">
-      <Chart
-        options={optionssalesoverview}
-        series={seriessalesoverview}
-        type="bar"
-        height="295px"
-      />
+      <Chart options={optionssalesoverview} series={seriessalesoverview} type="bar" height="295px" />
     </BaseCard>
   );
 };
