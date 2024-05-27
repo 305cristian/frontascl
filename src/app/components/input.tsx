@@ -1,4 +1,17 @@
-import { Box, FormControl, FormControlLabel, FormLabel, IconButton, InputAdornment, InputBase, Paper, Radio, RadioGroup, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  IconButton,
+  InputAdornment,
+  InputBase,
+  Paper,
+  Radio,
+  RadioGroup,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -27,7 +40,7 @@ export const InputTextCC: React.FC<InputTextProps> = ({ register, label, icon, t
           required: { value: required, message: `${label} is required` },
         })}
         name={name}
-        label={required ? (name === "usuario" ? "" + label : "*" + label) : "" + label}
+        label={required ? (name === "username" ? "" + label : "*" + label) : "" + label}
         id={name}
         InputProps={{
           endAdornment: <InputAdornment position="end">{icon}</InputAdornment>,

@@ -10,12 +10,13 @@ import {
   Checklist,
   Article,
   PostAdd,
-  List,
   FileCopy,
+  Task,
   FormatListNumbered,
-  Check,
-  DoneAll,
   CheckCircleOutline,
+  TaskAlt,
+  BorderAll,
+  NoteAdd,
 } from "@mui/icons-material";
 import {
   Container,
@@ -49,7 +50,9 @@ import { GetProgramas, GetTurnos, GetLugarObs, GetProyectos, GetAreas } from "@/
 import { useResponsive } from "@/hooks/use-responsive";
 import axios from "axios";
 import { Account } from "@/app/_mock/account";
-import { SweetNotifySuccess } from "@/app/components/sweet-notificacion";
+import { SweetNotifyError, SweetNotifySuccess } from "@/app/components/sweet-notificacion";
+import PreviewReport from "./reports/viewpreview";
+import { useRouter } from "next/navigation";
 
 //--------------------------------------------------------
 export default function FormOPT() {
@@ -59,6 +62,7 @@ export default function FormOPT() {
     username: process.env.NEXT_PUBLIC_USER || "",
     password: process.env.NEXT_PUBLIC_PASS || "",
   };
+  const route = useRouter();
   const upLg = useResponsive("up", "lg");
 
   const [listaAreas, setlistaAreas] = useState<any[]>([]);
@@ -75,6 +79,12 @@ export default function FormOPT() {
   const [showForm, setShowForm] = useState(0);
   const [step, setStep] = useState(0);
   const [namePanel, setnamePanel] = useState(" : Informacion General");
+
+  //-------------------------------------------------------------------
+  const [showReport, setShowReport] = useState(false);
+  const [idPrograma, setIdPrograma] = useState(0);
+  //-------------------------------------------------------------------
+  const [image, setImage] = useState<string>();
 
   const {
     register,
@@ -111,14 +121,6 @@ export default function FormOPT() {
     setlistaLugarObs(lugares);
   }
 
-  const uploadImages = async (images: [{ name: "string"; fileKey: "string"; blobFile: { name: "string" } }]) => {
-    images.map((val) => {
-      /*  val.blobFil trae los fatos del file esto se envia a guardar en firebase o s3 */
-      console.log(val.blobFile.name);
-    });
-    // console.log("lista de images s3 ", images);
-  };
-
   const registrarProceso = handleSubmit(async (data: any) => {
     //console.log(data);
     if (showForm === 1) {
@@ -142,10 +144,10 @@ export default function FormOPT() {
         const responseMediaDet = await registrarMediaDet(data.imagenes, responseMedia.idMedia);
 
         if (responseMediaDet) {
-          SweetNotifySuccess({
-            message: "El proceso ha sido registrado exitosamente",
-            redirectUrl: "pages/ssa/formopt",
-          });
+          onNext();
+          setIdPrograma(response.data.object.idAscl);
+          //Cargamos las imagenes a BUCKET S3
+          await uploadImagesS3(data.imagenes);
         } else {
           alert("A ocurrido un error al cargar las imagenes");
         }
@@ -196,9 +198,33 @@ export default function FormOPT() {
     }
   }
 
+  type ImagesType = {
+    blobFile: File;
+  };
+  const uploadImagesS3 = async (images: ImagesType[]): Promise<void> => {
+    images.map(async (val) => {
+      try {
+        const formData = new FormData();
+        formData.append("image", val.blobFile);
+        const headers = {
+          "Content-Type": "multipart/form-data",
+        };
+
+        const { data } = await axios.post("api/s3", formData, { headers });
+        if (data.success) {
+          console.log(data.data.url);
+          setImage(data.data.url);
+        }
+      } catch (error) {
+        console.log(error);
+        SweetNotifyError({ message: "Error al comunicarse con s3: " + error });
+      }
+    });
+  };
+
   function getDatosPreview(data: any) {
-    console.log("data: ", data);
-    console.log("lista proyectos", listaProyectos);
+    //console.log("data: ", data);
+    //console.log("lista proyectos", listaProyectos);
     let preview = [
       {
         key: "Programa",
@@ -251,6 +277,21 @@ export default function FormOPT() {
     //console.log("previer", preview);
     //console.log("imagespreview ", data.imagenes);
   }
+
+  const showReporte = () => {
+    new Promise(() => {
+      setTimeout(() => {
+        setShowReport(true);
+      }, 1);
+    });
+
+    setShowReport(false);
+  };
+
+  const newRegister = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_HOST_URL}/pages/ssa/formopt `;
+    //route.push("/pages/ssa/formopt");
+  };
 
   return (
     <PageContainer title="SSA - Inspecciones" description="SSA - OPT (Observacion Planificada de Tareas)">
@@ -498,7 +539,6 @@ export default function FormOPT() {
                             )}
                           </Box>
                         )}
-
                         {showForm == 1 && (
                           <Box component="section">
                             <Grid container spacing={2}>
@@ -577,18 +617,40 @@ export default function FormOPT() {
                             </Grid>
                           </Box>
                         )}
+                        {showForm == 2 && (
+                          <Box sx={{ textAlign: "center", padding: 2 }}>
+                            <TaskAlt sx={{ fontSize: 70, color: "#00A76F" }} />
+                            <Typography variant="h3" color="#00A76F">
+                              Programa Registrado exitosamente
+                            </Typography>
+                            <br />
+                            <Task sx={{ fontSize: 200, color: "#566573" }} />
+                            <br />
+                            <Button onClick={showReporte} variant="contained" color="primary">
+                              <Article />  Ver Reporte
+                            </Button>
+                            {showReport && <PreviewReport idPrograma={idPrograma} />}
+                            <br />
+                            <br />
+                            <Button onClick={newRegister} variant="contained" color="success">
+                              <NoteAdd />  Nuevo
+                            </Button>
+                          </Box>
+                        )}
                         <br />
                         <Box display="flex" justifyContent="space-between" alignItems="center">
-                          <div>
-                            <ButtonGroup>
-                              <Button color="primary" onClick={onPrevious} disabled={step === 0} startIcon={<FirstPage />}>
-                                Previous
-                              </Button>
-                              <Button type="submit" color="primary" disabled={step === 1} endIcon={<LastPage />}>
-                                Next
-                              </Button>
-                            </ButtonGroup>
-                          </div>
+                          {showForm < 2 && (
+                            <div>
+                              <ButtonGroup>
+                                <Button color="primary" onClick={onPrevious} disabled={step === 0} startIcon={<FirstPage />}>
+                                  Previous
+                                </Button>
+                                <Button type="submit" color="primary" disabled={step === 1} endIcon={<LastPage />}>
+                                  Next
+                                </Button>
+                              </ButtonGroup>
+                            </div>
+                          )}
                           <div>
                             {showForm == 1 && (
                               <Button color="primary" variant="contained" type="submit" startIcon={<Checklist />}>

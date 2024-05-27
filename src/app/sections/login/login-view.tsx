@@ -22,11 +22,10 @@ import { InputPassCC, InputTextCC } from "../../components/input";
 import { AccountCircle, Google, Facebook, Twitter } from "@mui/icons-material";
 import axios from "axios";
 import { SweetNotifyError } from "@/app/components/sweet-notificacion";
-import { useEffect } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { FormControlLabel } from "@mui/material";
-import Checkbox from '@mui/material/Checkbox';
+import Checkbox from "@mui/material/Checkbox";
 
 // ----------------------------------------------------------------------
 
@@ -77,16 +76,13 @@ export default function LoginView() {
         <InputPassCC register={register} label="Password" name="password" required={false} errors={errors} />
       </Stack>
 
-      <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Remember me"
-          />
+      <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
 
       <LoadingButton
         fullWidth
         size="large"
         type="submit"
-        sx={{my:4}}
+        sx={{ my: 4 }}
         variant="contained"
         style={{ backgroundColor: "#212B36", color: "white", fontWeight: "bold", padding: "10px", borderRadius: "8px" }}
         onClick={Login}
@@ -94,11 +90,10 @@ export default function LoginView() {
         Login
       </LoadingButton>
 
-        <Typography variant="body2" color="text.secondary" align="center" >
-            {'Copyright © '} Departamento IT |  CLP {' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
+      <Typography variant="body2" color="text.secondary" align="center">
+        {"Copyright © "} Departamento IT | CLP {new Date().getFullYear()}
+        {"."}
+      </Typography>
     </form>
   );
 
@@ -128,7 +123,6 @@ export default function LoginView() {
             <Image src="/images/logos/Logo1.png" alt="Banner clp" width={70} height={70} />
           </Box>
           <br />
-
 
           <Divider sx={{ my: 2 }}>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>

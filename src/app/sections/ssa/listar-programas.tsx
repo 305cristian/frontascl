@@ -5,7 +5,7 @@
  * Author:  Cristian R. Paz  */
 
 import { SelectStatusCC, SelectCC } from "@/app/components/select-option";
-import { Box, Button, Divider, Grid, Modal, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogContent, Divider, Grid, Modal, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
@@ -13,10 +13,14 @@ import { DataRangeCC } from "@/app/components/date-hour";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
 import { GetActividadLiderazgo, GetProgramas, GetTurnos, GetLugarObs, GetProyectos, GetAreas } from "@/app/api/dataApiComponents";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { SweetNotifyWarning } from "@/app/components/sweet-notificacion";
+import { DocModal } from "@/app/sections/ssa/reports/modalview";
+import Swal from "sweetalert2";
+import { Account } from "@/app/_mock/account";
 
 //-------------------------------------------------------------------
 
@@ -29,7 +33,6 @@ export default function ReportSSA() {
   const [listaTurnos, setlistaTurnos] = useState<any[]>([]);
   const [listaLugarObs, setlistaLugarObs] = useState<any[]>([]);
 
-  const [listaEstados, setlistaEstados] = useState<any[]>([]);
   const [datRows, setlistaRegistros] = useState<any[]>([]);
 
   const [listaGeneral, setListaGeneral] = useState<any[]>([]);
@@ -43,6 +46,7 @@ export default function ReportSSA() {
     username: process.env.NEXT_PUBLIC_USER || "",
     password: process.env.NEXT_PUBLIC_PASS || "",
   };
+  const account = Account();
 
   //const responsedata = ResponseData();
   const {
@@ -132,13 +136,13 @@ export default function ReportSSA() {
     }
   });
 
-  const zfil = (value: any, length: number) => {
+  const zfill = (value: any, length: number) => {
     const str = value.toString();
     return str.padStart(length, "0");
   };
 
   const dataColumns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 70, renderCell: (params) => <>{zfil(params.value, 4)}</> },
+    { field: "id", headerName: "ID", width: 70, renderCell: (params) => <>{zfill(params.value, 4)}</> },
     {
       field: "acslGeneralActividad",
       headerName: "ACTIVIDAD LIDERAZGO",
@@ -168,11 +172,22 @@ export default function ReportSSA() {
       sortable: false,
       renderCell: (parans) => (
         <>
-          <Button color="info" variant="contained" onClick={() => viewReport(parans.row.id)}>
-            <RemoveRedEyeIcon />
-          </Button>
-          <Button color="error" variant="contained" onClick={() => anularReport(parans.row.id)}>
-            <DeleteSweepIcon />
+          {parans.row.statusAscl == 2 && (
+            <div>
+              <Button color="info" variant="contained" onClick={() => viewReport(parans.row.id)}>
+                <RemoveRedEyeIcon />
+              </Button>
+              {account.role == "root" || account.role == "admin" ? (
+                <Button color="error" variant="contained" onClick={() => anularReport(parans.row.id)}>
+                  <DeleteSweepIcon />
+                </Button>
+              ) : (
+                ""
+              )}
+            </div>
+          )}
+          <Button color="error" variant="contained" onClick={() => viewReport(parans.row.id)}>
+            <VisibilityOffIcon />
           </Button>
         </>
       ),
@@ -192,53 +207,35 @@ export default function ReportSSA() {
     }
   }
   function anularReport(id: any) {
-    alert(id);
+    Swal.fire({
+      title: "Atención?",
+      html: "<h5>Esta seguro que desea anular el documento?</h5>",
+      showDenyButton: true,
+      confirmButtonText: "Si",
+      denyButtonText: `Cancelar`,
+      icon: "question",
+      allowEscapeKey: false,
+      allowOutsideClick: false,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/ascl/anular-doc/${id}`, "", { auth: authCredentials });
+        if (response.data.status == "success") {
+          Swal.fire("OK", response.data.message, "success");
+        }
+      }
+    });
   }
-  const style = {
-    position: "absolute" as "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 1000,
-    bgcolor: "background.paper",
-
-    boxShadow: 24,
-    p: 4,
-  };
 
   return (
     <>
       <Modal open={open} onClose={handleClose}>
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            TITULO DEL REPORTE
-          </Typography>
-          <hr />
-
-          {listaGeneral.map((val: any, i) => (
-            <Box key={i}>
-              <Typography>{val.area}</Typography>
-              <Typography>{val.proyecto}</Typography>
-              <Typography>{val.lugarObservacion}</Typography>
-            </Box>
-          ))}
-          <br />
-          {listaPreguntas.map((val: any, i) => (
-            <Box key={i}>
-              <Typography>{val.preguntas}</Typography>
-              <Typography>{val.checkOption}</Typography>
-              <Typography>{val.comentarios}</Typography>
-            </Box>
-          ))}
-          <br />
-          {listaImagenes.map((val: any, i) => (
-            <Box key={i}>
-              <Typography>{val.nameImage}</Typography>
-              <Typography>{val.s3Url}</Typography>
-            </Box>
-          ))}
-        </Box>
+        <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
+          <DialogContent dividers>
+            <DocModal listaGeneral={listaGeneral} listaPreguntas={listaPreguntas} listaImagenes={listaImagenes} />
+          </DialogContent>
+        </Dialog>
       </Modal>
+
       <Box my={3} component="form" onSubmit={getRegistros}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={2} lg={2}>
@@ -317,8 +314,13 @@ export default function ReportSSA() {
         </Grid>
       </Box>
       <hr />
-      {showTable ? (
-        <Box sx={{ overflowY: "auto", width: "100%" }}>
+      {showTable && (
+        <Box
+          sx={{
+            overflowX: { xs: "auto", sm: "hidden" },
+            overflowY: { xs: "hidden", sm: "auto" },
+          }}
+        >
           <DataGrid
             rows={datRows}
             columns={dataColumns}
@@ -332,8 +334,6 @@ export default function ReportSSA() {
             slots={{ toolbar: GridToolbar }}
           />
         </Box>
-      ) : (
-        ""
       )}
     </>
   );

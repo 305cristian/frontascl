@@ -4,7 +4,20 @@
  * Copyright (c) 2024 CC
  * Author:  Cristian R. Paz  */
 
-import { FirstPage, LastPage, Checklist, PostAdd, FileCopy, FormatListNumbered, Check, CheckCircleOutline } from "@mui/icons-material";
+import {
+  FirstPage,
+  LastPage,
+  Checklist,
+  PostAdd,
+  FileCopy,
+  FormatListNumbered,
+  Check,
+  CheckCircleOutline,
+  Article,
+  NoteAdd,
+  Task,
+  TaskAlt,
+} from "@mui/icons-material";
 import {
   Container,
   Stack,
@@ -38,6 +51,7 @@ import { useResponsive } from "@/hooks/use-responsive";
 import { Account } from "@/app/_mock/account";
 import { SweetNotifySuccess } from "@/app/components/sweet-notificacion";
 import axios from "axios";
+import PreviewReport from "./reports/viewpreview";
 
 //---------------------------------------------------------
 
@@ -64,6 +78,9 @@ export default function FormSTL() {
   const [showForm, setShowForm] = useState(0);
   const [step, setStep] = useState(0);
   const [namePanel, setnamePanel] = useState(" : Informacion General");
+  //-------------------------------------
+  const [showReport, setShowReport] = useState(false);
+  const [idPrograma, setIdPrograma] = useState(0);
 
   const {
     register,
@@ -137,11 +154,9 @@ export default function FormSTL() {
         const responseMediaDet = await registrarMediaDet(data.imagenes, responseMedia.idMedia);
 
         if (responseMediaDet) {
-          SweetNotifySuccess({
-            message: "El proceso ha sido registrado exitosamente",
-            redirectUrl: "pages/ssa/formrs",
-            //await registrarUploadImages(data.imagenes);
-          });
+          onNext();
+          setIdPrograma(response.data.object.idAscl);
+          //await registrarUploadImages(data.imagenes);
         } else {
           alert("A ocurrido un error al cargar las imagenes");
         }
@@ -288,24 +303,20 @@ export default function FormSTL() {
     //console.log("imagespreview ", data.imagenes);
   }
 
-  function getPreguntas() {
-    /* let response = await axios.post("ruta");
-    if (response.data) {
-      //alimento la constante lista
-    } */
-    const datapreg = [
-      //esta lista debe alimentarse con el api, el api sera consumido con axios
-      {
-        label: "Quien mato al mar muerto",
-        id: "1",
-      },
-      {
-        label: "Cuanto es 1 +1",
-        id: "2",
-      },
-    ];
-    setlistaPreguntas(datapreg);
-  }
+  const showReporte = () => {
+    new Promise(() => {
+      setTimeout(() => {
+        setShowReport(true);
+      }, 1);
+    });
+
+    setShowReport(false);
+  };
+
+  const newRegister = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_HOST_URL}/pages/ssa/formstl `;
+    //route.push("/pages/ssa/formopt");
+  };
 
   return (
     <PageContainer title="SSA - STL" description="SSA - STL (Stop, Talk, Listen)">
@@ -728,18 +739,41 @@ export default function FormSTL() {
                             </Grid>
                           </Box>
                         )}
+                        {showForm == 3 && (
+                          <Box sx={{ textAlign: "center", padding: 2 }}>
+                            <TaskAlt sx={{ fontSize: 70, color: "#00A76F" }} />
+                            <Typography variant="h3" color="#00A76F">
+                              Programa Registrado exitosamente
+                            </Typography>
+                            <br />
+                            <Task sx={{ fontSize: 200, color: "#566573" }} />
+                            <br />
+                            <Button onClick={showReporte} variant="contained" color="primary">
+                              <Article />  Ver Reporte
+                            </Button>
+                            {showReport && <PreviewReport idPrograma={idPrograma} />}
+                            <br />
+                            <br />
+                            <Button onClick={newRegister} variant="contained" color="success">
+                              <NoteAdd />  Nuevo
+                            </Button>
+                          </Box>
+                        )}
+                        <br />
                         <br />
                         <Box display="flex" justifyContent="space-between" alignItems="center">
-                          <div>
-                            <ButtonGroup>
-                              <Button color="primary" onClick={onPrevious} disabled={step === 0} startIcon={<FirstPage />}>
-                                Previous
-                              </Button>
-                              <Button type="submit" color="primary" disabled={step === 2} endIcon={<LastPage />}>
-                                Next
-                              </Button>
-                            </ButtonGroup>
-                          </div>
+                          {showForm < 3 && (
+                            <div>
+                              <ButtonGroup>
+                                <Button color="primary" onClick={onPrevious} disabled={step === 0} startIcon={<FirstPage />}>
+                                  Previous
+                                </Button>
+                                <Button type="submit" color="primary" disabled={step === 2} endIcon={<LastPage />}>
+                                  Next
+                                </Button>
+                              </ButtonGroup>
+                            </div>
+                          )}
                           <div>
                             {showForm == 2 && (
                               <Button color="primary" variant="contained" type="submit" startIcon={<Checklist />}>

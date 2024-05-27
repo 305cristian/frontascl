@@ -16,6 +16,9 @@ import {
   Check,
   DoneAll,
   CheckCircleOutline,
+  Task,
+  TaskAlt,
+  NoteAdd,
 } from "@mui/icons-material";
 import {
   Container,
@@ -50,6 +53,7 @@ import { useResponsive } from "@/hooks/use-responsive";
 import axios from "axios";
 import { SweetNotifySuccess } from "@/app/components/sweet-notificacion";
 import { Account } from "@/app/_mock/account";
+import PreviewReport from "./reports/viewpreview";
 
 //---------------------------------------------------------
 
@@ -75,6 +79,9 @@ export default function FormIP() {
   const [showForm, setShowForm] = useState(0);
   const [step, setStep] = useState(0);
   const [namePanel, setnamePanel] = useState(" : Informacion General");
+  //-------------------------------------
+  const [showReport, setShowReport] = useState(false);
+  const [idPrograma, setIdPrograma] = useState(0);
 
   const {
     register,
@@ -144,10 +151,8 @@ export default function FormIP() {
         const responseMediaDet = await registrarMediaDet(data.imagenes, responseMedia.idMedia);
 
         if (responseMediaDet) {
-          SweetNotifySuccess({
-            message: "El proceso ha sido registrado exitosamente",
-            redirectUrl: "pages/ssa/formip",
-          });
+          onNext();
+          setIdPrograma(response.data.object.idAscl);
         } else {
           alert("A ocurrido un error al cargar las imagenes");
         }
@@ -273,6 +278,21 @@ export default function FormIP() {
     //console.log("previer", preview);
     //console.log("imagespreview ", data.imagenes);
   }
+
+  const showReporte = () => {
+    new Promise(() => {
+      setTimeout(() => {
+        setShowReport(true);
+      }, 1);
+    });
+
+    setShowReport(false);
+  };
+
+  const newRegister = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_HOST_URL}/pages/ssa/formip `;
+    //route.push("/pages/ssa/formopt");
+  };
 
   return (
     <PageContainer title="SSA - Inspecciones" description="SSA - Inspecciones planificadas">
@@ -628,18 +648,41 @@ export default function FormIP() {
                             </Grid>
                           </Box>
                         )}
+                        {showForm == 3 && (
+                          <Box sx={{ textAlign: "center", padding: 2 }}>
+                            <TaskAlt sx={{ fontSize: 70, color: "#00A76F" }} />
+                            <Typography variant="h3" color="#00A76F">
+                              Programa Registrado exitosamente
+                            </Typography>
+                            <br />
+                            <Task sx={{ fontSize: 200, color: "#566573" }} />
+                            <br />
+                            <Button onClick={showReporte} variant="contained" color="primary">
+                              <Article />  Ver Reporte
+                            </Button>
+                            {showReport && <PreviewReport idPrograma={idPrograma} />}
+                            <br />
+                            <br />
+                            <Button onClick={newRegister} variant="contained" color="success">
+                              <NoteAdd />  Nuevo
+                            </Button>
+                          </Box>
+                        )}
+                        <br />
                         <br />
                         <Box display="flex" justifyContent="space-between" alignItems="center">
-                          <div>
-                            <ButtonGroup>
-                              <Button color="primary" onClick={onPrevious} disabled={step === 0} startIcon={<FirstPage />}>
-                                Previous
-                              </Button>
-                              <Button type="submit" color="primary" disabled={step === 2} endIcon={<LastPage />}>
-                                Next
-                              </Button>
-                            </ButtonGroup>
-                          </div>
+                          {showForm < 3 && (
+                            <div>
+                              <ButtonGroup>
+                                <Button color="primary" onClick={onPrevious} disabled={step === 0} startIcon={<FirstPage />}>
+                                  Previous
+                                </Button>
+                                <Button type="submit" color="primary" disabled={step === 2} endIcon={<LastPage />}>
+                                  Next
+                                </Button>
+                              </ButtonGroup>
+                            </div>
+                          )}
                           <div>
                             {showForm == 2 && (
                               <Button color="primary" variant="contained" type="submit" startIcon={<Checklist />}>

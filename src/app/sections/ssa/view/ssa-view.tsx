@@ -6,45 +6,46 @@
 
 import PropTypes from "prop-types";
 
-import { Button, Card, Container, Divider, Grid, Stack, Typography } from "@mui/material";
-import BaseCard from "@/app/components/shared/BaseCard";
-import Iconify from "@/app/components/iconify/iconify";
+import { Box, Button, Card, Container, Divider, Grid, Stack, Typography, alpha } from "@mui/material";
+import Image from "next/image";
+import { useTheme } from "@mui/material/styles";
 
 // ----------------------------------------------------------------------
 
 export default function SsaView() {
+  const theme = useTheme();
+
   return (
     <Container maxWidth="xl">
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">SSA</Typography>
 
-       {/*  <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" width={undefined} sx={undefined} color={""} />}>
+        {/*  <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" width={undefined} sx={undefined} color={""} />}>
           New
         </Button> */}
       </Stack>
       <Divider sx={{ borderStyle: "revert", m: 2 }} />
 
       <Grid container spacing={3}>
-        <Grid item xs={12} lg={12}>
-          <BaseCard title="SSA CONTENT">
-            <Stack spacing={2} direction="row">
-              <Button variant="contained" color="primary">
-                Contained
-              </Button>
-              <Button variant="contained" color="error">
-                Contained
-              </Button>
-              <Button variant="contained" color="secondary">
-                Contained
-              </Button>
-              <Button variant="contained" color="success">
-                Contained
-              </Button>
-              <Button variant="contained" color="warning">
-                Contained
-              </Button>
-            </Stack>
-          </BaseCard>
+        <Grid item xs={12} lg={3}>
+          <Stack spacing={2} direction="row">
+            <Image src="/assets/background/overlay_3.jpg" alt="img" width={500} height={500}></Image>
+          </Stack>
+        </Grid>
+        <Grid item xs={12} lg={3}>
+          <Stack spacing={2} direction="row">
+            <Image src="/assets/background/overlay_3.jpg" alt="img" width={500} height={500}></Image>
+          </Stack>
+        </Grid>
+        <Grid item xs={12} lg={3}>
+          <Stack spacing={2} direction="row">
+            <Image src="/assets/background/overlay_3.jpg" alt="img" width={500} height={500}></Image>
+          </Stack>
+        </Grid>
+        <Grid item xs={12} lg={3}>
+          <Stack spacing={2} direction="row">
+            <Image src="/assets/background/overlay_3.jpg" alt="img" width={500} height={500}></Image>
+          </Stack>
         </Grid>
       </Grid>
     </Container>

@@ -1,6 +1,4 @@
-import { useEffect } from "react";
 import Swal, { SweetAlertIcon } from "sweetalert2";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 export function SweetNotifySuccess({ message, redirectUrl }: { message: string; redirectUrl: string }) {
   Swal.fire({

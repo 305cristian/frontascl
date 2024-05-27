@@ -12,7 +12,6 @@ export async function middleware(req: any) {
     secret: process.env.NEXTAUTH_SECRET,
     secureCookie: process.env.NODE_ENV === "production",
   });
-  console.log("dddddd: ", session);
   const { pathname, origin } = req.nextUrl;
 
   // Rutas protegidas
