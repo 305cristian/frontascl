@@ -11,7 +11,7 @@ import { Box, Button, CardMedia, Container, Grid, Table, TableBody, TableCell, T
 import ReactToPrint from "react-to-print";
 import PrintIcon from "@mui/icons-material/Print";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import React from "react";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
@@ -229,12 +229,12 @@ export const DocModal: React.FC<interFace<any>> = ({ listaGeneral, listaPregunta
                   <TableCell>
                     <Grid container spacing={2} p={2}>
                       {listaImagenes.map((image, index) => (
-                        <Grid item key={index} xs={12} sm={6} md={4}>
+                        <Grid item key={index} xs={12} sm={6} md={6}>
                           <CardMedia
                             key={`image-${index}`}
                             component="img"
-                            height="100"
-                            image={image.nameImage}
+                            height="300"
+                            image={`${process.env.NEXT_PUBLIC_URL_MEDIA}${image.s3Url}${image.nameImage}`}
                             style={{ objectFit: "contain" }}
                             alt={image.name}
                           />

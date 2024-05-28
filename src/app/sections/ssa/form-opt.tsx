@@ -83,8 +83,6 @@ export default function FormOPT() {
   //-------------------------------------------------------------------
   const [showReport, setShowReport] = useState(false);
   const [idPrograma, setIdPrograma] = useState(0);
-  //-------------------------------------------------------------------
-  const [image, setImage] = useState<string>();
 
   const {
     register,
@@ -140,16 +138,18 @@ export default function FormOPT() {
       try {
         let response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/ascl/save-ascl`, datos, { auth: authCredentials });
         //await registrarPreguntas(data, response.data.object.idAscl); // TODO: NO HAY PREGUNTAS EN ESTE PROGRAMA
+        console.log("idsss: " + response.data.object.idAscl);
+        console.log("status: " + response.data.status);
         const responseMedia = await registrarMedia(data, response.data.object.idAscl);
-        const responseMediaDet = await registrarMediaDet(data.imagenes, responseMedia.idMedia);
+        const responseMediaDet = await registrarMediaDet(data.imagenes, responseMedia.idMedia, response.data.object.idAscl);
 
         if (responseMediaDet) {
           onNext();
           setIdPrograma(response.data.object.idAscl);
           //Cargamos las imagenes a BUCKET S3
-          await uploadImagesS3(data.imagenes);
+          await uploadImagesS3(data.imagenes, response.data.object.idAscl);
         } else {
-          alert("A ocurrido un error al cargar las imagenes");
+          SweetNotifyError({ message: "A ocurrido un error al cargar las imagenes" });
         }
       } catch (error) {
         console.error("Error de comunicacion con el servicio amazonas", error);
@@ -180,10 +180,10 @@ export default function FormOPT() {
     }
   }
 
-  async function registrarMediaDet(imagenes: any, idMedia: any) {
+  async function registrarMediaDet(imagenes: any, idMedia: any, id: any) {
     const datos = imagenes.map((val: any) => ({
-      s3Url: "url//www.com",
-      nameImg: val.blobFile.name,
+      s3Url: "/go-zami/ssa/opt/",
+      nameImg: `${id}_${val.blobFile.name}`,
       idAllMedia: {
         idMedia: idMedia,
       },
@@ -201,19 +201,20 @@ export default function FormOPT() {
   type ImagesType = {
     blobFile: File;
   };
-  const uploadImagesS3 = async (images: ImagesType[]): Promise<void> => {
+  const uploadImagesS3 = async (images: ImagesType[], id: any): Promise<void> => {
     images.map(async (val) => {
       try {
         const formData = new FormData();
         formData.append("image", val.blobFile);
+        formData.append("ruta", "go-zami/ssa/opt/");
+        formData.append("id", id);
         const headers = {
           "Content-Type": "multipart/form-data",
         };
 
-        const { data } = await axios.post("api/s3", formData, { headers });
+        const { data } = await axios.post(`${process.env.NEXT_PUBLIC_HOST_URL}/api/s3`, formData, { headers });
         if (data.success) {
-          console.log(data.data.url);
-          setImage(data.data.url);
+          console.log(data.message, data.data.url);
         }
       } catch (error) {
         console.log(error);

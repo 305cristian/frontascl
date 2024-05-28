@@ -50,7 +50,7 @@ import { DateCC, TimeCC } from "../../components/date-hour";
 import { SelectCC } from "../../components/select-option";
 import { GetProgramas, GetTurnos, GetLugarObs, GetProyectos, GetAreas, GetPreguntas } from "@/app/api/dataApiComponents";
 import axios from "axios";
-import { SweetNotifySuccess } from "@/app/components/sweet-notificacion";
+import { SweetNotifyError, SweetNotifySuccess } from "@/app/components/sweet-notificacion";
 import { Account } from "@/app/_mock/account";
 import PreviewReport from "./reports/viewpreview";
 
@@ -145,17 +145,17 @@ export default function FormRS() {
         let response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/ascl/save-ascl`, datos, { auth: authCredentials });
         //alert(response.data.message);
         //console.log(response.data.object);
+
         await registrarPreguntas(data, response.data.object.idAscl);
         const responseMedia = await registrarMedia(data, response.data.object.idAscl);
-
-        const responseMediaDet = await registrarMediaDet(data.imagenes, responseMedia.idMedia);
-
+        const responseMediaDet = await registrarMediaDet(data.imagenes, responseMedia.idMedia, response.data.object.idAscl);
         if (responseMediaDet) {
           onNext();
           setIdPrograma(response.data.object.idAscl);
-          //await registrarUploadImages(data.imagenes);
+          //Cargamos las imagenes a BUCKET S3
+          await uploadImagesS3(data.imagenes, response.data.object.idAscl);
         } else {
-          alert("A ocurrido un error al cargar las imagenes");
+          SweetNotifyError({ message: "A ocurrido un error al cargar las imagenes" });
         }
       } catch (error) {
         console.error("Error de comunicacion con el servicio amazonas", error);
@@ -210,10 +210,10 @@ export default function FormRS() {
     }
   }
 
-  async function registrarMediaDet(imagenes: any, idMedia: any) {
+  async function registrarMediaDet(imagenes: any, idMedia: any, id: any) {
     const datos = imagenes.map((val: any) => ({
-      s3Url: "url//www.com",
-      nameImg: val.blobFile.name,
+      s3Url: "/go-zami/ssa/reu-seguimiento/",
+      nameImg: `${id}_${val.blobFile.name}`,
       idAllMedia: {
         idMedia: idMedia,
       },
@@ -228,20 +228,29 @@ export default function FormRS() {
     }
   }
 
-  const registrarUploadImages = async (
-    images: [
-      {
-        name: "string";
-        fileKey: "string";
-        blobFile: { name: "string" };
+  type ImagesType = {
+    blobFile: File;
+  };
+  const uploadImagesS3 = async (images: ImagesType[], id: any): Promise<void> => {
+    images.map(async (val) => {
+      try {
+        const formData = new FormData();
+        formData.append("image", val.blobFile);
+        formData.append("ruta", "go-zami/ssa/reu-seguimiento/");
+        formData.append("id", id);
+        const headers = {
+          "Content-Type": "multipart/form-data",
+        };
+
+        const { data } = await axios.post(`${process.env.NEXT_PUBLIC_HOST_URL}/api/s3`, formData, { headers });
+        if (data.success) {
+          console.log(data.message, data.data.url);
+        }
+      } catch (error) {
+        console.log(error);
+        SweetNotifyError({ message: "Error al comunicarse con s3: " + error });
       }
-    ]
-  ) => {
-    images.map((val) => {
-      /*  val.blobFil trae los fatos del file esto se envia a guardar en firebase o s3 */
-      console.log(val.blobFile.name);
     });
-    // console.log("lista de images s3 ", images);
   };
 
   function getDatosPreview(data: any) {

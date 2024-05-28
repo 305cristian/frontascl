@@ -1,3 +1,11 @@
+/*
+ * Created on Tue May 28 2024
+ *
+ * Copyright (c) 2024 CC
+ *
+ * Author: Cristian R. Paz
+ */
+
 import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { NextResponse } from "next/server";
@@ -15,19 +23,22 @@ const bucketS3 = process.env.NEXT_PUBLIC_BUCKET_S3;
 export async function POST(req: any) {
   const formData = await req.formData();
   const image = formData.get("image");
+  const id = formData.get("id");
+  const ruta = formData.get("ruta");
+  const imagen = `${id}_${image.name}`;
   if (image && typeof image === "object" && image.name) {
     const params = {
       Bucket: bucketS3,
-      Key: image.name,
+      Key: `${ruta}${imagen}`,
       Body: (await image.arrayBuffer()) as Buffer,
       ContentType: image.type,
     };
-
+    console.log(params);
     const command = new PutObjectCommand(params);
     await s3Cliente.send(command); //Aqui se envia a cargar la imagen a S3
     const getObjectParams = {
       Bucket: bucketS3,
-      Key: image.name,
+      Key: `${ruta}${imagen}`,
       ACL: "private",
     };
 
