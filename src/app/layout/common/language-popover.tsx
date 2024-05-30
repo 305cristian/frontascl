@@ -44,12 +44,10 @@ export default function LanguagePopover() {
       <IconButton
         onClick={handleOpen}
         sx={{
-          width: 40,
-          height: 40,
           bgcolor: open ? "action.selected" : "",
         }}
       >
-        <Image src={LANGS[0].icon} alt={LANGS[0].label} width={70} height={70} />
+        <Image src={LANGS[0].icon} alt={LANGS[0].label} width={35} height={35} />
       </IconButton>
 
       <Popover

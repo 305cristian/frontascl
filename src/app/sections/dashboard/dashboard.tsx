@@ -13,14 +13,10 @@ import Link from "next/link";
 import Image from "next/image";
 import AppWebsiteVisits from "@/app/components/dashboard/app-website-visits";
 import AppCurrentVisits from "@/app/components/dashboard/app-current-visits";
-import { useSession } from "next-auth/react";
-import SalesOverview from "@/app/components/dashboard/SalesOverview";
 
 //---------------------------------------------------------------------
 
 const Dashboard = () => {
-  const { data: session, status } = useSession();
-  // console.log({ session, status });
   return (
     <>
       <h3>Hi, Welcome Modules ZAMI 👋</h3>

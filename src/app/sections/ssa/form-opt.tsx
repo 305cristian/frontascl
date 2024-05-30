@@ -138,8 +138,7 @@ export default function FormOPT() {
       try {
         let response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/ascl/save-ascl`, datos, { auth: authCredentials });
         //await registrarPreguntas(data, response.data.object.idAscl); // TODO: NO HAY PREGUNTAS EN ESTE PROGRAMA
-        console.log("idsss: " + response.data.object.idAscl);
-        console.log("status: " + response.data.status);
+
         const responseMedia = await registrarMedia(data, response.data.object.idAscl);
         const responseMediaDet = await registrarMediaDet(data.imagenes, responseMedia.idMedia, response.data.object.idAscl);
 

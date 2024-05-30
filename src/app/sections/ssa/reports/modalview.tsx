@@ -67,7 +67,7 @@ export const DocModal: React.FC<interFace<any>> = ({ listaGeneral, listaPregunta
               <TableBody>
                 <TableRow>
                   <TableCell align="center" width={200} rowSpan={5}>
-                    <Image src="/images/logos/LogoHTrans.png" alt="logo" width={100} height={50} />
+                    <Image src="/images/logos/logo.png" alt="logo" width={100} height={100} />
                   </TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>Empresa</TableCell>
                   <TableCell>Catering Las Peñas</TableCell>

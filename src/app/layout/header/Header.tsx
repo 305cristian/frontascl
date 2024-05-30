@@ -9,7 +9,6 @@ import { Box, AppBar, Toolbar, styled, Stack, IconButton } from "@mui/material";
 import PropTypes from "prop-types";
 
 // components
-import Profile from "./Profile";
 import Search from "./Search";
 import { IconMenu2 } from "@tabler/icons-react";
 import AccountPopover from "@/app/layout/common/account-popover";

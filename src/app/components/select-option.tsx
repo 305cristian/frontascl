@@ -30,16 +30,14 @@ interface SelectProps<T> {
 /* EJEMPLO DE USO
    <SelectCC _control={control} _setValue={setValue} label=" Areas" name="area" size="small" required={true} errors={errors} listaData={listaAreas} />
  */
-export const SelectCC: React.FC<SelectProps<any>> = ({
-  _control,
-  _setValue,
-  label,
-  name,
-  size,
-  required,
-  errors,
-  listaData,
-}) => {
+export const SelectCC: React.FC<SelectProps<any>> = ({ _control, _setValue, label, name, size, required, errors, listaData }) => {
+  const listaAux = [
+    {
+      label: "No options",
+      value: "-1",
+    },
+  ];
+
   const [selectedOpt, setSelectedOpt] = useState<string | null>(null);
   const selectRef = useRef<any>(null);
 
@@ -60,7 +58,7 @@ export const SelectCC: React.FC<SelectProps<any>> = ({
           <Autocomplete
             fullWidth
             id={name}
-            options={listaData}
+            options={listaData ? listaData : listaAux}
             size={size}
             value={selectedOpt}
             getOptionLabel={(option) => option.label}
@@ -70,20 +68,14 @@ export const SelectCC: React.FC<SelectProps<any>> = ({
             }}
             renderInput={(params) => (
               <Box>
-                <TextField
-                  {...params}
-                  ref={selectRef}
-                  label={required ? "* " + label : "" + label}
-                />
+                <TextField {...params} ref={selectRef} label={required ? "* " + label : "" + label} />
               </Box>
             )}
           />
         )}
       />
 
-      {errors[name] && typeof errors[name].message === "string" && (
-        <Typography color="error">{errors[name].message}</Typography>
-      )}
+      {errors[name] && typeof errors[name].message === "string" && <Typography color="error">{errors[name].message}</Typography>}
     </div>
   );
 };
@@ -97,14 +89,7 @@ interface Select2Props<T> {
   required: boolean;
 }
 
-export const SelectStatusCC: React.FC<Select2Props<any>> = ({
-  register,
-  label,
-  name,
-  size,
-  required,
-  errors,
-}) => {
+export const SelectStatusCC: React.FC<Select2Props<any>> = ({ register, label, name, size, required, errors }) => {
   const [status, setStatus] = useState("2");
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -130,9 +115,7 @@ export const SelectStatusCC: React.FC<Select2Props<any>> = ({
           <MenuItem value={0}>INACTIVO</MenuItem>
         </Select>
       </FormControl>
-      {errors[name] && typeof errors[name].message === "string" && (
-        <Typography color="error">{errors[name].message}</Typography>
-      )}
+      {errors[name] && typeof errors[name].message === "string" && <Typography color="error">{errors[name].message}</Typography>}
     </div>
   );
 };

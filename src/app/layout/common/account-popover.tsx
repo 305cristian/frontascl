@@ -42,9 +42,7 @@ export default function AccountPopover() {
   };
 
   const logOut = async () => {
-    await signOut({ redirect: false });
-    route.push("/");
-    //window.location.href = "/";
+    await signOut(); //La ruta redirecionamiento de cierre de seción se la especifica en pages del archivo route.tsx de nextAuth
   };
 
   return (

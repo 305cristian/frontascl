@@ -34,13 +34,13 @@ const handler = NextAuth({
               telefono: user[0].telefonoUser,
               rol: user[0].nombreRol,
             };
-            console.log(user);
             return userSession;
           } else {
-            throw validate;
+            throw new Error("La contraseña es incorrecta");
           }
         }
         if (response.data.status === "warning") {
+          //throw response.data;
           throw response.data;
         }
         return null;
@@ -57,6 +57,10 @@ const handler = NextAuth({
       session.user = token as any;
       return session;
     },
+  },
+  pages: {
+    //Cuando se cierra la seción se va a la raiz
+    signIn: "/",
   },
 });
 const validatePassword = (dataUser: any, password: any) => {

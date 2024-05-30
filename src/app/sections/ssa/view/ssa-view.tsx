@@ -4,25 +4,16 @@
  * Copyright (c) 2024 CC
  * Author:  Cristian R. Paz  */
 
-import PropTypes from "prop-types";
-
-import { Box, Button, Card, Container, Divider, Grid, Stack, Typography, alpha } from "@mui/material";
+import { Container, Divider, Grid, Stack, Typography } from "@mui/material";
 import Image from "next/image";
-import { useTheme } from "@mui/material/styles";
 
 // ----------------------------------------------------------------------
 
 export default function SsaView() {
-  const theme = useTheme();
-
   return (
     <Container maxWidth="xl">
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">SSA</Typography>
-
-        {/*  <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" width={undefined} sx={undefined} color={""} />}>
-          New
-        </Button> */}
       </Stack>
       <Divider sx={{ borderStyle: "revert", m: 2 }} />
 

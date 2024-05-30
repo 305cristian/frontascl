@@ -19,20 +19,19 @@ import { bgGradient } from "@/theme/css";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { InputPassCC, InputTextCC } from "../../components/input";
-import { AccountCircle, Google, Facebook, Twitter } from "@mui/icons-material";
-import axios from "axios";
+import { AccountCircle } from "@mui/icons-material";
 import { SweetNotifyError } from "@/app/components/sweet-notificacion";
-import { useSession, signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { FormControlLabel } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
+import Swal from "sweetalert2";
 
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
   const router = useRouter();
   const theme = useTheme();
-
   /* TODO: código para realizar las validaciones del formulario, uso hooks */
   const {
     register,
@@ -41,26 +40,38 @@ export default function LoginView() {
   } = useForm();
   /* cierro código */
 
-  /* TODO: Metodo login, una vez validado el usuario */
+  /* TODO: Metodo login */
   const Login = handleSubmit(async (data) => {
     let username = data.username;
     let password = data.password;
 
-    const responseNextAuth = await signIn("credentials", { username, password, redirect: false });
+    try {
+      /*Validamos las credenciales de acceso usando nextauth*/
+      const responseNextAuth = await signIn("credentials", { username, password, redirect: false });
 
-    if (responseNextAuth?.error) {
-      if (responseNextAuth.error == "undefined") {
-        SweetNotifyError({ message: "La contraseña es incorrecta" });
+      if (responseNextAuth?.ok) {
+        /*Obtener la sesión con los datos del usuario usando nextauth*/
+        const session = await getSession();
+        Swal.fire({
+          title: "OK",
+          text: `Bienvenido al sistema ${session?.user?.name}`,
+          icon: "success",
+        });
+        /*si las validaciones estan todo bien me redirecciono al Dashboard*/
+        router.push("/dashboard");
       } else {
-        SweetNotifyError({ message: responseNextAuth.error });
+        if (responseNextAuth?.error == "") {
+          SweetNotifyError({ message: "Error al cominicarse con el servicio de la base de datos" });
+        } else {
+          SweetNotifyError({ message: `${responseNextAuth?.error}` });
+        }
       }
-      return;
+    } catch (error) {
+      console.log("Error durante el proceso de signIn:" + error);
     }
-    router.push("/dashboard");
-    //window.location.href = `/dashboard `;
   });
-  /* cierro código */
 
+  /* cierro código */
   const renderForm = (
     <form onSubmit={Login}>
       <Stack spacing={3}>
@@ -75,7 +86,6 @@ export default function LoginView() {
         />
         <InputPassCC register={register} label="Password" name="password" required={false} errors={errors} />
       </Stack>
-
       <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
 
       <LoadingButton
@@ -89,7 +99,6 @@ export default function LoginView() {
       >
         Login
       </LoadingButton>
-
       <Typography variant="body2" color="text.secondary" align="center">
         {"Copyright © "} Departamento IT | CLP {new Date().getFullYear()}
         {"."}
